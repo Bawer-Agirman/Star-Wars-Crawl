@@ -1,3 +1,7 @@
+/* DISCLAIMER : Après maintes echecs, je me suis résolu à prendre un code sur css-tricks. 
+Toutefois, Je le commenterai pour montrer que je l'ai bien compris */
+
+/* Pour le body, on précise d'utiliser tout l'espace, d'où les 100% pour width et height*/
 body {
     width: 100%;
     height: 100%;
@@ -5,27 +9,35 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
     overflow: hidden;
+    /* Tout le contenu qui dépasse sera caché, donc on ne pourra pas voir le texte qui attend d'etre defilé*/
 }
 
+
+/* permettra de cacher le texte sous une couche d'obscurité une fois atteint le haut de l'écran*/
 .fade {
     position: relative;
+    /* relatif par rapport au conteneur parent, ici body. Utile pour appliquer le top -25px */
     width: 100%;
     min-height: 60vh;
+    /*précise la hauteur minimum que doit occuper la div pour commencer à cacher le texte */
     top: -25px;
+    /* le bord du div se trouve au dessus de l'espace reservé à la page (body), non visible. ce sera utile pour appliquer le dégradé noir*/
     background-image: linear-gradient(0deg, transparent, black 75%);
     z-index: 1;
-}
-
-.title p {
-    color: blue;
+    /* le fade se trouvera sur une étage supérieure donc lorsque le texte viendra sous lui, on ne verra plus le dernier */
 }
 
 
+/* la div star-wars contient le crawl qui contient le texte */
 .star-wars {
     display: flex;
+    /* pour utiliser la largeur de l'espace */
     justify-content: center;
+    /* pour centrer le contenu au centre */
     position: relative;
+    /* relatif par rapport au parent au-dessus donc body */
     height: 800px;
+    /* determine la hauteur sur lequel le texrte défilera*/
     color: #feda4a;
     font-family: 'Pathway Gothic One', sans-serif;
     font-size: 500%;
@@ -33,34 +45,49 @@ body {
     letter-spacing: 6px;
     line-height: 150%;
     perspective: 400px;
+    /* profondeur de l'axe Z pour donner une impression de profondeur. Utile pour appliquer le translateZ dans l'animation, qui se fera à partir de 400px!*/
     text-align: justify;
+    /* pour ressembler a l'intro originale */
 }
 
+/* c'est cette div qui fera l'animation, on a préparé le terrain au dessus, maintenant reste plus qu'a faire defiler le texte */
 .crawl {
     position: relative;
+    /* relatif par rapport au parent au dessus donc star-wars, ce sera cette div qui "glissera sur le container star-wars" */
     top: 9999px;
+    /* pour faire commencer le texte bien en bas de l'écran, donc non visible pour l'instant*/
     transform-origin: 50% 100%;
-    animation: crawl 60s linear;
+    /* pour déterminer le point où l'animation s'enclenchera donc sur la moité de l'écran (50%) en bas (100%) */
+    animation: crawl 90s linear;
+    /* le nom donné à l'animation, le temps qu'elle prendra et son déplacement */
 }
 
+/* une classe dans une classe...*/
 .crawl>.title {
     font-size: 90%;
     text-align: center;
 }
 
+/* on applique des modifs au tag h1 de la classe title */
 .crawl>.title h1 {
-    margin: 0 0 100px;
+    margin: 150px 0 150px;
+    /* laisser de l'espace en dessous avant que le "vrai" texte défile */
     text-transform: uppercase;
 }
 
+/* les keyframes pour déterminer les points d'animation */
 @keyframes crawl {
     0% {
+        /* à 0%, donc au début, on dit tu commences a partir de top 0 mais attention ce top est dejà bien bas (déclaré dans .crawl), donc il se retrouvera sur la partie haute de la partie basse (travail relatif) */
         top: 0;
         transform: rotateX(20deg) translateZ(0);
+        /* faire une rotation de 20 deg sur l'axe x donc le texte se penche en avant, translate (0) car on ne veut pas que le texte commence dès le début à s'eloigner de l'écran */
     }
 
+    /* a 100% donc a la fin de l'animation, on dit top -6000px donc va bien au dessus de l'espace visible de l'écran donc donne l'impression que ca disparait */
     100% {
         top: -6000px;
         transform: rotateX(25deg) translateZ(-2500px);
+        /* on garde la meme rotation de l axe x mais la pour la profondeur on dit éloigne toi bien de l'ecran  (d'ou le moins 2500) à partir du point déclaré (perspective) déclare dans star-wars. donc au fur et à mesure le texte s'éloigne jusqu'à arriver à ce point */
     }
 }
